@@ -1,6 +1,6 @@
 const DefaultSettings = {
     "blockzoom": true,
-    "blockskill": true,
+    "blockskill": false,
     "blockscene": true,
     "blockcrystal": true,
     "blockabnormality": true,
