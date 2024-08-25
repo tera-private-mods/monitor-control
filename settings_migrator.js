@@ -11,14 +11,26 @@ const DefaultSettings = {
 }
 
 module.exports = function MigrateSettings(from_ver, to_ver, settings) {
-    if (from_ver === undefined) {
-        // Migrate legacy config file
-        return Object.assign(Object.assign({}, DefaultSettings), settings);
-    } else if (from_ver === null) {
-        // No config file exists, use default settings
-        return DefaultSettings;
-    } else {
-        // Migrate from older version (using the new system) to latest one
-        throw new Error('So far there is only one settings version and this should never be reached!');
+    if (from_ver === undefined) return { ...DefaultSettings, ...settings };
+    else if (from_ver === null) return DefaultSettings;
+    else {
+        from_ver = Number(from_ver);
+        to_ver = Number(to_ver);
+        if (from_ver + 1 < to_ver) {
+            settings = MigrateSettings(from_ver, from_ver + 1, settings);
+            return MigrateSettings(from_ver + 1, to_ver, settings);
+        }
+        const oldsettings = settings;
+        switch (to_ver) {
+            default:
+                settings = Object.assign(DefaultSettings, {});
+
+                for (const option in oldsettings) {
+                    if (settings[option] !== undefined) {
+                        settings[option] = oldsettings[option];
+                    }
+                }
+        }
+        return settings;
     }
-}
+};
