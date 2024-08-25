@@ -38,6 +38,7 @@ module.exports = function Monitorcontrol(mod) {
     });
 
     mod.hook('S_START_ACTION_SCRIPT', 3, (event) => {
+        if (mod.settings.asnoblock.includes(event.script)) return;
         if (mod.settings.blockzoom && event.script > 0) return false;
     });
 
